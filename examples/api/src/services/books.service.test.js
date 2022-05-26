@@ -7,12 +7,12 @@ const fakeBooks = [
   },
 ];
 
-const MongoLibStub = {
-  getAll: () => [...fakeBooks],
-  create: () => {},
-};
+const mockGetAll = jest.fn();
 
-jest.mock('../lib/mongo.lib', () => jest.fn().mockImplementation(() => MongoLibStub));
+jest.mock('../lib/mongo.lib', () => jest.fn().mockImplementation(() => ({
+  getAll: mockGetAll,
+  create: () => {},
+})));
 
 describe('Test for bookService', () => {
   let service;
@@ -24,11 +24,14 @@ describe('Test for bookService', () => {
   describe('test for getbooks', () => {
     test('should return a list book', async () => {
       // Arrage
+      mockGetAll.mockResolvedValue(fakeBooks);
       // Act
-      const books = await service.getBooks();
+      const books = await service.getBooks({});
       console.log(books);
       // Assert
       expect(books.length).toEqual(1);
+      expect(mockGetAll).toHaveBeenCalled();
+      expect(mockGetAll).toHaveBeenCalledWith('books', {});
     });
   });
 });
