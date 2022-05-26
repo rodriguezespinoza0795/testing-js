@@ -1,11 +1,5 @@
+const { generateManyBook } = require('../fakes/books.fake');
 const BooksService = require('./books.service');
-
-const fakeBooks = [
-  {
-    _id: 1,
-    name: 'Harry Potter',
-  },
-];
 
 const mockGetAll = jest.fn();
 
@@ -24,12 +18,13 @@ describe('Test for bookService', () => {
   describe('test for getbooks', () => {
     test('should return a list book', async () => {
       // Arrage
+      const fakeBooks = generateManyBook(20);
       mockGetAll.mockResolvedValue(fakeBooks);
       // Act
       const books = await service.getBooks({});
       console.log(books);
       // Assert
-      expect(books.length).toEqual(1);
+      expect(books.length).toEqual(20);
       expect(mockGetAll).toHaveBeenCalled();
       expect(mockGetAll).toHaveBeenCalledWith('books', {});
     });
